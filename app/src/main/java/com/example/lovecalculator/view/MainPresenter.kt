@@ -9,9 +9,9 @@ import retrofit2.Response
 
 class MainPresenter {
 
-    val api = RetrofitService().api
-    val TAG = "kad"
-    lateinit var view: MainView
+    private val api = RetrofitService().api
+    private val TAG = "ololo"
+    private lateinit var view: MainView
 
     fun getData(firstName: String, secondName: String) {
         api.getPercentage(firstName, secondName).enqueue(object : Callback<LoveModel> {
@@ -19,6 +19,7 @@ class MainPresenter {
                 if (response.isSuccessful) {
                     val model = response.body()
                     model?.let {
+                        App.appDatabase.getLoveDao().insert(it)
                         view.changeScreen(it)
                     }
                 }
@@ -27,11 +28,11 @@ class MainPresenter {
             override fun onFailure(call: Call<LoveModel>, t: Throwable) {
                 Log.e(TAG, "onFailure: ${t.message}")
             }
-
         })
     }
 
     fun attachView(view: MainView) {
         this.view = view
     }
+
 }
